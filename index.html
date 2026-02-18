@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>KingMod - Rocket League Mod Menu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* Reset */
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
+      font-family: 'Sora', sans-serif;
+      background-color: #0d0d0d;
+      color: white;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+    /* Background */
+    #background-container {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      background: #0d0d0d;
+    }
+    #particles-js {
+        position: relative;
+        z-index: 2;
+        height: 100%;
+    }
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 72px;
+      background: rgba(13, 13, 13, 0.85);
+      backdrop-filter: saturate(180%) blur(10px);
+      display: flex;
+      align-items: center;
+      padding: 0 48px;
+      z-index: 10;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .nav-left {
+      font-weight: 700;
+      font-size: 24px;
+    }
+    .nav-links {
+      margin-left: auto;
+      display: flex;
+      gap: 36px;
+      font-weight: 600;
+      font-size: 15px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+      padding-bottom: 4px;
+      transition: color 0.3s, border-color 0.3s;
+    }
+    .nav-links a:hover,
+    .nav-links a:focus {
+      color: #009fe9;
+      border-color: #009fe9;
+      outline: none;
+    }
+    /* Main Content Wrapper */
+    .main-content {
+        position: relative;
+        z-index: 5;
+    }
+    /* Hero Section */
+    .hero-section {
+      max-width: 700px;
+      margin: 144px auto 0;
+      padding: 0 48px;
+      text-align: center;
+      animation: fadeInUp 1s ease forwards;
+    }
+    .hero-section h1 {
+      font-weight: 800;
+      font-size: 48px;
+      margin-bottom: 16px;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+    .glow-effect {
+      text-shadow: 0 0 20px #009fe9, 0 0 40px #009fe9, 0 0 60px #009fe9;
+      animation: glow-pulse 2s ease-in-out infinite alternate;
+    }
+    @keyframes glow-pulse {
+      from { text-shadow: 0 0 20px #009fe9, 0 0 40px #009fe9, 0 0 60px #009fe9; }
+      to { text-shadow: 0 0 30px #009fe9, 0 0 60px #009fe9, 0 0 90px #009fe9; }
+    }
+    .animated-gradient {
+        background: linear-gradient(90deg, #ff0000, #ffffff, #ff0000);
+        background-size: 200% auto;
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: gradient-animation 4s linear infinite;
+    }
+    .hero-section p {
+      font-weight: 500;
+      font-size: 18px;
+      color: #ccc;
+      margin-bottom: 36px;
+    }
+    .hero-buttons {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .hero-buttons a {
+      font-weight: 600;
+      font-size: 15px;
+      padding: 14px 36px;
+      border-radius: 30px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      user-select: none;
+    }
+    .purchase-btn {
+      background-color: #009fe9;
+      color: white;
+      border: none;
+    }
+    .purchase-btn:hover,
+    .purchase-btn:focus {
+      background-color: #0077c2;
+      outline: none;
+      transform: scale(1.05);
+      box-shadow: 0 5px 15px rgba(0, 159, 233, 0.4);
+    }
+    .discord-btn {
+      border: 2px solid #009fe9;
+      color: #009fe9;
+      background-color: transparent;
+    }
+    .discord-btn:hover,
+    .discord-btn:focus {
+      background-color: #009fe9;
+      color: white;
+      outline: none;
+    }
+    /* Features Section */
+    .features-section {
+        margin-top: 100px;
+        padding: 80px 48px;
+        max-width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+        animation: fadeInUp 1s ease 0.5s forwards;
+        opacity: 0;
+    }
+    .features-section h2 {
+        text-align: center;
+        font-size: 36px;
+        margin-bottom: 48px;
+    }
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 36px;
+    }
+    .feature-card {
+        background-color: rgba(255, 255, 255, 0.03);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        text-align: center;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .feature-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 15px 30px rgba(0, 159, 233, 0.4);
+        border-color: rgba(0, 159, 233, 0.5);
+    }
+    .feature-card {
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+    .feature-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(0, 159, 233, 0.2), transparent);
+        transition: left 0.5s;
+    }
+    .feature-card:hover::before {
+        left: 100%;
+    }
+    .feature-card img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        display: block;
+    }
+    .feature-card-content {
+        padding: 24px;
+    }
+    .feature-card h4 {
+        font-size: 20px;
+        font-weight: 600;
+        color: #009fe9;
+        margin-bottom: 12px;
+    }
+    .feature-card p {
+        color: #ccc;
+        font-size: 16px;
+        line-height: 1.6;
+    }
+    /* Pricing Section */
+    .pricing-section {
+        padding: 80px 48px;
+        animation: fadeInUp 1s ease 1s forwards;
+        opacity: 0;
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .pricing-section h2 {
+        text-align: center;
+        font-size: 36px;
+        margin-bottom: 48px;
+    }
+    .pricing-grid {
+        display: flex;
+        justify-content: center;
+        gap: 24px;
+    }
+    .pricing-features {
+        text-align: left;
+        margin-bottom: 20px;
+    }
+    .pricing-features p {
+        margin: 8px 0;
+        color: #ccc;
+        font-size: 14px;
+    }
+    .subscription-note {
+        text-align: center;
+        margin-top: 30px;
+        padding: 20px;
+        background: rgba(0, 159, 233, 0.1);
+        border-radius: 15px;
+        border: 1px solid rgba(0, 159, 233, 0.3);
+    }
+    .subscription-note p {
+        color: #009fe9;
+        font-weight: 600;
+        margin: 0;
+    }
+    .pricing-card {
+        background-color: rgba(255, 255, 255, 0.03);
+        padding: 24px;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .pricing-card:hover {
+        transform: translateY(-15px) scale(1.05);
+        box-shadow: 0 20px 40px rgba(0, 159, 233, 0.5);
+        border-color: #009fe9;
+    }
+    .pricing-card.lifetime {
+        border-color: #009fe9;
+        box-shadow: 0 0 25px rgba(0, 159, 233, 0.4);
+    }
+    .pricing-duration {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+    .pricing-price {
+        font-size: 36px;
+        font-weight: 700;
+        color: #009fe9;
+        margin-bottom: 24px;
+    }
+    .pricing-card a {
+        display: block;
+        background-color: #009fe9;
+        color: white;
+        padding: 12px;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: background-color 0.3s ease;
+    }
+    .pricing-card a:hover {
+        background-color: #0077c2;
+    }
+    /* Animations */
+    @keyframes fadeInUp {
+      0% {opacity: 0; transform: translateY(24px);}
+      100% {opacity: 1; transform: translateY(0);}
+    }
+    @keyframes gradient-animation {
+        from { background-position: 0% center; }
+        to { background-position: -200% center; }
+    }
+    /* Responsive */
+    @media (max-width: 768px) {
+      nav {
+        padding: 0 24px;
+        height: 64px;
+      }
+      .hero-section, .features-section, .pricing-section {
+        padding: 80px 24px;
+        margin-top: 0;
+      }
+      .hero-section { margin-top: 120px; }
+      .nav-links {
+        gap: 16px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-left animated-gradient" aria-label="Site name">KingMod</div>
+    <div class="nav-links" role="navigation" aria-label="Main navigation">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="https://discord.gg/rNpYUuTc2q" target="_blank" rel="noopener noreferrer">Discord</a>
+    </div>
+  </nav>
+
+  <div id="background-container">
+      <div id="particles-js"></div>
+  </div>
+
+  <div class="main-content">
+    <section class="hero-section" role="banner">
+        <h1 class="animated-gradient glow-effect">KingMod Pro</h1>
+        <p>Premium Gaming Enhancement Suite - €10/Month</p>
+        <div class="hero-buttons">
+        <a href="#pricing" class="purchase-btn">View Prices</a>
+        <a href="https://discord.gg/rNpYUuTc2q" target="_blank" rel="noopener noreferrer" class="discord-btn">Join Discord</a>
+        </div>
+    </section>
+
+    <section class="features-section" id="features">
+        <h2>Features</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <img src="1.png?v=1" alt="Items Spawner Feature">
+                <div class="feature-card-content">
+                    <h4>Items Spawner</h4>
+                    <p>Spawn any in-game items instantly with our advanced item generation system.</p>
+                </div>
+            </div>
+            <div class="feature-card">
+                <img src="2.png?v=1" alt="Credit Spawner Feature">
+                <div class="feature-card-content">
+                    <h4>Credit Spawner</h4>
+                    <p>Generate unlimited credits and currency for your gaming experience.</p>
+                </div>
+            </div>
+            <div class="feature-card">
+                <img src="3.png?v=1" alt="Hitbox & Boost Pads Feature">
+                <div class="feature-card-content">
+                    <h4>Hitbox & Boost Pads</h4>
+                    <p>Visualize hitboxes and boost pad locations with precision overlays.</p>
+                </div>
+            </div>
+            <div class="feature-card">
+                <img src="4.png?v=1" alt="ESP & Controller Overlay Feature">
+                <div class="feature-card-content">
+                    <h4>ESP Suite & Controller Overlay</h4>
+                    <p>Complete ESP for boost players, payers, controller overlay, players & 3D ball tracking.</p>
+                </div>
+            </div>
+            <div class="feature-card">
+                <img src="5.png?v=1" alt="Titles Spawner Feature">
+                <div class="feature-card-content">
+                    <h4>Titles Spawner</h4>
+                    <p>Unlock and spawn any title or achievement in the game instantly.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="pricing-section" id="pricing">
+        <h2>Subscription Plans</h2>
+        <div class="pricing-grid">
+            <div class="pricing-card lifetime">
+                <div class="pricing-duration">Monthly Pro</div>
+                <div class="pricing-price">€10</div>
+                <div class="pricing-features">
+                    <p>✓ All 5 Premium Features</p>
+                    <p>✓ Items & Credit Spawner</p>
+                    <p>✓ Complete ESP Suite</p>
+                    <p>✓ Hitbox & Boost Visualization</p>
+                    <p>✓ Titles Spawner</p>
+                    <p>✓ 24/7 Support</p>
+                </div>
+                <a href="https://discord.gg/rNpYUuTc2q" target="_blank">Subscribe Now</a>
+            </div>
+        </div>
+        <div class="subscription-note">
+            <p>🔥 Premium monthly subscription includes all features with regular updates and priority support!</p>
+        </div>
+    </section>
+  </div>
+
+  <!-- Particles.js library -->
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script>
+    // Add click effects to feature cards
+    document.addEventListener('DOMContentLoaded', function() {
+        const featureCards = document.querySelectorAll('.feature-card');
+        featureCards.forEach(card => {
+            card.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            });
+        });
+
+        // Add floating animation to pricing card
+        const pricingCard = document.querySelector('.pricing-card.lifetime');
+        if (pricingCard) {
+            pricingCard.style.animation = 'float 3s ease-in-out infinite';
+        }
+    });
+
+    // Add floating keyframes
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Init particles background
+    particlesJS('particles-js', {
+      particles: {
+        number: { value: 80, density: { enable: true, value_area: 800 } },
+        color: { value: "#009fe9" },
+        shape: {
+          type: "triangle",
+          stroke: { width: 0, color: "#000000" },
+          polygon: { nb_sides: 5 }
+        },
+        opacity: { value: 0.5, random: true },
+        size: { value: 3, random: true },
+        line_linked: {
+          enable: true,
+          distance: 126,
+          color: "#abe4ff",
+          opacity: 0.4,
+          width: 1
+        },
+        move: { enable: true, speed: 1, direction: "none", out_mode: "bounce" }
+      },
+      interactivity: {
+        events: {
+          onhover: { enable: true, mode: "repulse" },
+          onclick: { enable: false, mode: "push" },
+          resize: true
+        }
+      },
+      retina_detect: true
+    });
+  </script>
+</body>
+</html>
